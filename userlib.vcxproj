@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\config.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\include\cipher\Cipher.h" />
+    <ClInclude Include="src\include\cipher\CipherArm64.h" />
+    <ClInclude Include="src\include\iconloader\IconLoader.h" />
+    <ClInclude Include="src\include\imgui\androidbk.h" />
+    <ClInclude Include="src\include\imgui\imconfig.h" />
+    <ClInclude Include="src\include\imgui\imgui.h" />
+    <ClInclude Include="src\include\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\include\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="src\include\imgui\imgui_internal.h" />
+    <ClInclude Include="src\include\imgui\imstb_rectpack.h" />
+    <ClInclude Include="src\include\imgui\imstb_textedit.h" />
+    <ClInclude Include="src\include\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\include\KittyMemory\KittyArm64.h" />
+    <ClInclude Include="src\include\KittyMemory\KittyMemory.h" />
+    <ClInclude Include="src\include\KittyMemory\KittyScanner.h" />
+    <ClInclude Include="src\include\KittyMemory\KittyUtils.h" />
+    <ClInclude Include="src\include\KittyMemory\MemoryBackup.h" />
+    <ClInclude Include="src\include\KittyMemory\MemoryPatch.h" />
+    <ClInclude Include="src\include\misc\fileselector.h" />
+    <ClInclude Include="src\include\misc\Logger.h" />
+    <ClInclude Include="src\include\misc\obfuscate.h" />
+    <ClInclude Include="src\include\nlohmann\json.hpp" />
+    <ClInclude Include="src\include\nlohmann\json_fwd.hpp" />
+    <ClInclude Include="src\main.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="src\include\cipher\libciphered.so" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{607BA9F1-8537-4D97-AE89-6EF0FA7D46A7}</ProjectGuid>
+    <Keyword>Android</Keyword>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <ApplicationType>Android</ApplicationType>
+    <ApplicationTypeRevision>3.0</ApplicationTypeRevision>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+    <UseOfStl>c++_shared</UseOfStl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+    <UseOfStl>c++_shared</UseOfStl>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)\Intermediates\</IntDir>
+    <IncludePath>$(SolutionDir)src\include;$(IncludePath)</IncludePath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)\Intermediates\</IntDir>
+    <IncludePath>$(SolutionDir)src\include;$(IncludePath)</IncludePath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link />
+    <PostBuildEvent>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <Link />
+    <Link>
+      <OutputFile>$(SolutionDir)bin\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>llvm-objcopy --add-section .config=$(ProjectDir)src\config.json --set-section-flags .config=readonly,contents,data $(TargetPath)
+powershell.exe -ExecutionPolicy Unrestricted -Command "&amp; { $jsonContent = Get-Content -Raw -Path '$(SolutionDir)src\config.json' | ConvertFrom-Json; $newFilename = '{0}-{1}.{2}.{3}.so' -f $jsonContent.name.Replace('.so', ''), $jsonContent.majorVersion, $jsonContent.minorVersion, $jsonContent.patchVersion; Rename-Item -Path '$(TargetPath)' -NewName $newFilename }"
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <CppLanguageStandard>gnu++1z</CppLanguageStandard>
+      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-fvisibility=hidden %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>RELEASE=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link />
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <Link>
+      <OutputFile>$(SolutionDir)bin\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
+      <DebuggerSymbolInformation>OmitAllSymbolInformation</DebuggerSymbolInformation>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>llvm-objcopy --add-section .config=$(ProjectDir)src\config.json --set-section-flags .config=readonly,contents,data $(TargetPath)
+powershell.exe -ExecutionPolicy Unrestricted -Command "&amp; { $jsonContent = Get-Content -Raw -Path '$(SolutionDir)src\config.json' | ConvertFrom-Json; $newFilename = '{0}-{1}.{2}.{3}.so' -f $jsonContent.name.Replace('.so', ''), $jsonContent.majorVersion, $jsonContent.minorVersion, $jsonContent.patchVersion; Rename-Item -Path '$(TargetPath)' -NewName $newFilename }"
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

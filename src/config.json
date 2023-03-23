@@ -1,0 +1,13 @@
+{
+  "name": "libUserlib.so",
+  "description": "this is a demo mode to help you build your mod with microsoft visual studio",
+  "majorVersion":0,
+  "minorVersion":0,
+  "patchVersion":0,
+  "displayName":"userlib",
+  "selfManagedUI": true,
+  "displaysUI":true,
+  "dependencies": [
+
+  ]
+}
